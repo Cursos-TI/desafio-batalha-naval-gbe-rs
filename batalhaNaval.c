@@ -1,80 +1,113 @@
 #include <stdio.h>
 
 // Desafio Batalha Naval - MateCheck
-// Este código inicial serve como base para o desenvolvimento do sistema de Batalha Naval.
-// Siga os comentários para implementar cada parte do desafio.
+
+#define TAMANHO_TABULEIRO 10
+#define AGUA 0
+#define NAVIO 3
+#define TAMANHO_NAVIO 3
 
 int main() {
-    // Nível Novato - Posicionamento dos Navios
-
-    // Declaração de variáveis
-
-    // Tamanho fixo 10x10
-    int tabuleiro[10][10];
-    // Define os navios como vetores unidimensionais
-    int navio1[3] = {3, 3, 3}; // Navio horizontal
-    int navio2[3] = {3, 3, 3}; // Navio vertical
-    // Define coordenadas iniciais
-    int linhaNavio1 = 2, colunaNavio1 = 4; // navio horizontal começa na linha 2, coluna 4
-    int linhaNavio2 = 5, colunaNavio2 = 1; // navio vertical começa na linha 5, coluna 1
-
-    int valido = 1; // flag para validar se há espaço e não há sobreposição
-
-    // Inicializa todas as posições com 0 (água)
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 10; j++) {
-            tabuleiro[i][j] = 0;
-        }
-    }
-
-    // Sugestão: Posicione dois navios no tabuleiro, um verticalmente e outro horizontalmente.
-
-    // Valida e posiciona o navio horizontal
-    if (colunaNavio1 + 3 <= 10) {
-        for (int i = 0; i < 3; i++) {
-            if (tabuleiro[linhaNavio1][colunaNavio1 + i] != 0) {
-                valido = 0;
-                break;
-            }
-        }
-        if (valido) {
-            for (int i = 0; i < 3; i++) {
-                tabuleiro[linhaNavio1][colunaNavio1 + i] = navio1[i];
-            }
-        }
-    }
-
-    // Valida e posiciona o navio vertical
-    valido = 1; // reseta flag
-    if (linhaNavio2 + 3 <= 10) {
-        for (int i = 0; i < 3; i++) {
-            if (tabuleiro[linhaNavio2 + i][colunaNavio2] != 0) {
-                valido = 0;
-                break;
-            }
-        }
-        if (valido) {
-            for (int i = 0; i < 3; i++) {
-                tabuleiro[linhaNavio2 + i][colunaNavio2] = navio2[i];
-            }
-        }
-    }
-
-    // Sugestão: Utilize `printf` para exibir as coordenadas de cada parte dos navios.
+    // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
     
-    // Exibe o tabuleiro para verificar
-    printf("Tabuleiro inicializado:\n");
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 10; j++) {
+     // Cria o tabuleiro e inicializa com água (0)
+    int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO];
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
+        for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
+            tabuleiro[i][j] = AGUA;
+        }
+    }
+
+    int valido;
+
+    // Navio 1 - Horizontal 
+    int linhaNavio1 = 4, colunaNavio1 = 4;
+    valido = 1; // Limpa a flag
+    // Verifica os limites do tabuleiro
+    if (colunaNavio1 + TAMANHO_NAVIO <= TAMANHO_TABULEIRO) {
+        for (int i = 0; i < TAMANHO_NAVIO; i++) {
+            // Verifica se as posições estão livres
+            if (tabuleiro[linhaNavio1][colunaNavio1 + i] != AGUA) {
+                valido = 0;
+                break;
+            }
+        }
+        if (valido) {
+            for (int i = 0; i < TAMANHO_NAVIO; i++) {
+                // Posiciona o Navio
+                tabuleiro[linhaNavio1][colunaNavio1 + i] = NAVIO;
+            }
+        }
+    }
+
+    // Navio 2 - Vertical 
+    int linhaNavio2 = 5, colunaNavio2 = 1;
+    valido = 1;
+    // Verifica os limites do tabuleiro
+    if (linhaNavio2 + TAMANHO_NAVIO <= TAMANHO_TABULEIRO) {
+        for (int i = 0; i < TAMANHO_NAVIO; i++) {
+            // Verifica se as posições estão livres
+            if (tabuleiro[linhaNavio2 + i][colunaNavio2] != AGUA) {
+                valido = 0;
+                break;
+            }
+        }
+        if (valido) {
+            for (int i = 0; i < TAMANHO_NAVIO; i++) {
+                // Posiciona o Navio
+                tabuleiro[linhaNavio2 + i][colunaNavio2] = NAVIO;
+            }
+        }
+    }
+
+    // Navio 3 - Diagonal
+    int linhaNavio3 = 0, colunaNavio3 = 0;
+    valido = 1;
+    // Verifica os limites do tabuleiro
+    if (linhaNavio3 + TAMANHO_NAVIO <= TAMANHO_TABULEIRO && colunaNavio3 + TAMANHO_NAVIO <= TAMANHO_TABULEIRO) {
+        for (int i = 0; i < TAMANHO_NAVIO; i++) {
+            // Verifica se as posições estão livres
+            if (tabuleiro[linhaNavio3 + i][colunaNavio3 + i] != AGUA) {
+                valido = 0;
+                break;
+            }
+        }
+        if (valido) {
+            for (int i = 0; i < TAMANHO_NAVIO; i++) {
+                // Posiciona o Navio
+                tabuleiro[linhaNavio3 + i][colunaNavio3 + i] = NAVIO;
+            }
+        }
+    }
+
+    //Navio 4 - Diagonal
+    int linhaNavio4 = 0, colunaNavio4 = 9;
+    valido = 1;
+    // Verifica os limites do tabuleiro
+    if (linhaNavio4 + TAMANHO_NAVIO <= TAMANHO_TABULEIRO && colunaNavio4 - (TAMANHO_NAVIO - 1) >= 0) {
+        for (int i = 0; i < TAMANHO_NAVIO; i++) {
+            // Verifica se as posições estão livres
+            if (tabuleiro[linhaNavio4 + i][colunaNavio4 - i] != AGUA) {
+                valido = 0;
+                break;
+            }
+        }
+        if (valido) {
+            for (int i = 0; i < TAMANHO_NAVIO; i++) {
+                // Posiciona o Navio
+                tabuleiro[linhaNavio4 + i][colunaNavio4 - i] = NAVIO;
+            }
+        }
+    }
+    
+    // Exibe o tabuleiro 
+    printf("Tabuleiro Batalha Naval (%d = água, %d = navio):\n\n", AGUA, NAVIO);
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
+        for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
             printf("%d ", tabuleiro[i][j]);
         }
         printf("\n");
     }
-
-    // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
-    // Sugestão: Expanda o tabuleiro para uma matriz 10x10.
-    // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
-    // Sugestão: Exiba o tabuleiro completo no console, mostrando 0 para posições vazias e 3 para posições ocupadas.
 
     // Nível Mestre - Habilidades Especiais com Matrizes
     // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.

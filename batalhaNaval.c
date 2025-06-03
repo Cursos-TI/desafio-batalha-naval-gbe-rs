@@ -1,16 +1,83 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-// Desafio Batalha Naval - MateCheck
-
+// Constantes
 #define TAMANHO_TABULEIRO 10
 #define AGUA 0
 #define NAVIO 3
 #define TAMANHO_NAVIO 3
+#define HABILIDADE 5
+#define TAM_HABILIDADE 5
+#define TAM_OCTA_LIN 3
+#define TAM_OCTA_COL 5
+
+// Funções para preencher as matrizes de habilidade
+void preencherCone(int matriz[TAM_HABILIDADE][TAM_HABILIDADE]) {
+    for (int i = 0; i < TAM_HABILIDADE; i++) {
+        for (int j = 0; j < TAM_HABILIDADE; j++) {
+            if (i <= 2) {
+                matriz[i][j] = (j >= 2 - i && j <= 2 + i) ? 1 : 0;
+            } else {
+                matriz[i][j] = 0;
+            }
+        }
+    }
+}
+
+void preencherCruz(int matriz[TAM_HABILIDADE][TAM_HABILIDADE]) {
+    for (int i = 0; i < TAM_HABILIDADE; i++) {
+        for (int j = 0; j < TAM_HABILIDADE; j++) {
+            if (i == 2 || j == 2) {
+                matriz[i][j] = 1;
+            } else {
+                matriz[i][j] = 0;
+            }
+        }
+    }
+}
+
+void preencherOctaedro(int matriz[TAM_OCTA_LIN][TAM_OCTA_COL]) {
+    // Octaedro (losango): visual centralizado
+    int shape[3][5] = {
+        {0, 0, 1, 0, 0},
+        {0, 1, 1, 1, 0},
+        {0, 0, 1, 0, 0}
+    };
+    for (int i = 0; i < TAM_OCTA_LIN; i++) {
+        for (int j = 0; j < TAM_OCTA_COL; j++) {
+            matriz[i][j] = shape[i][j];
+        }
+    }
+}
+
+/* APLICAR HABILIDADE: Esta função aplica uma matriz de habilidade ao tabuleiro,
+ centralizando-a no ponto de origem (centroLinha, centroColuna).
+ Apenas as posições com valor 1 na matriz são aplicadas,
+ e só substitui posições com valor AGUA. */
+void aplicarHabilidade(int linhas, int colunas, int matriz[linhas][colunas], int centroLinha, int centroColuna, int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO]) {
+    int meioLinha = linhas / 2;
+    int meioColuna = colunas / 2;
+    for (int i = 0; i < linhas; i++) {
+        for (int j = 0; j < colunas; j++) {
+            int linhaTab = centroLinha - meioLinha + i;
+            int colunaTab = centroColuna - meioColuna + j;
+
+            if (linhaTab >= 0 && linhaTab < TAMANHO_TABULEIRO && colunaTab >= 0 && colunaTab < TAMANHO_TABULEIRO) {
+                if (matriz[i][j] == 1 && tabuleiro[linhaTab][colunaTab] == AGUA) {
+                    tabuleiro[linhaTab][colunaTab] = HABILIDADE;
+                }
+            }
+        }
+    }
+}
 
 int main() {
-    // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
-    
-     // Cria o tabuleiro e inicializa com água (0)
+    //Declaração de Variáveis
+    int cone[TAM_HABILIDADE][TAM_HABILIDADE];
+    int cruz[TAM_HABILIDADE][TAM_HABILIDADE];
+    int octaedro[TAM_OCTA_LIN][TAM_OCTA_COL];
+
+    // Cria o tabuleiro e inicializa com água (0)
     int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO];
     for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
         for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
@@ -20,9 +87,9 @@ int main() {
 
     int valido;
 
-    // Navio 1 - Horizontal 
-    int linhaNavio1 = 4, colunaNavio1 = 4;
-    valido = 1; // Limpa a flag
+    // Navio 1 - Horizontal
+    int linhaNavio1 = 0, colunaNavio1 = 4;
+    valido = 1; // Reseta a flag
     // Verifica os limites do tabuleiro
     if (colunaNavio1 + TAMANHO_NAVIO <= TAMANHO_TABULEIRO) {
         for (int i = 0; i < TAMANHO_NAVIO; i++) {
@@ -40,9 +107,9 @@ int main() {
         }
     }
 
-    // Navio 2 - Vertical 
-    int linhaNavio2 = 5, colunaNavio2 = 1;
-    valido = 1;
+    // Navio 2 - Vertical
+    int linhaNavio2 = 3, colunaNavio2 = 9;
+    valido = 1; // Reseta a flag
     // Verifica os limites do tabuleiro
     if (linhaNavio2 + TAMANHO_NAVIO <= TAMANHO_TABULEIRO) {
         for (int i = 0; i < TAMANHO_NAVIO; i++) {
@@ -62,7 +129,7 @@ int main() {
 
     // Navio 3 - Diagonal
     int linhaNavio3 = 0, colunaNavio3 = 0;
-    valido = 1;
+    valido = 1; // Reseta a flag
     // Verifica os limites do tabuleiro
     if (linhaNavio3 + TAMANHO_NAVIO <= TAMANHO_TABULEIRO && colunaNavio3 + TAMANHO_NAVIO <= TAMANHO_TABULEIRO) {
         for (int i = 0; i < TAMANHO_NAVIO; i++) {
@@ -80,9 +147,9 @@ int main() {
         }
     }
 
-    //Navio 4 - Diagonal
+    // Navio 4 - Diagonal
     int linhaNavio4 = 0, colunaNavio4 = 9;
-    valido = 1;
+    valido = 1; // Reseta a flag
     // Verifica os limites do tabuleiro
     if (linhaNavio4 + TAMANHO_NAVIO <= TAMANHO_TABULEIRO && colunaNavio4 - (TAMANHO_NAVIO - 1) >= 0) {
         for (int i = 0; i < TAMANHO_NAVIO; i++) {
@@ -99,36 +166,26 @@ int main() {
             }
         }
     }
-    
-    // Exibe o tabuleiro 
-    printf("Tabuleiro Batalha Naval (%d = água, %d = navio):\n\n", AGUA, NAVIO);
+
+    // Preenche habilidades
+    preencherCone(cone);
+    preencherCruz(cruz);
+    preencherOctaedro(octaedro);
+
+    // Aplica habilidades
+    aplicarHabilidade(TAM_HABILIDADE, TAM_HABILIDADE, cone, 8, 7, tabuleiro);
+    aplicarHabilidade(TAM_HABILIDADE, TAM_HABILIDADE, cruz, 4, 4, tabuleiro);
+    aplicarHabilidade(TAM_OCTA_LIN, TAM_OCTA_COL, octaedro, 8, 2, tabuleiro);
+
+    // Exibe o tabuleiro
+    printf("Tabuleiro Batalha Naval:\n");
+    printf("Legenda: %d = água, %d = navio, %d = habilidade especial\n\n", AGUA, NAVIO, HABILIDADE);
     for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
         for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
             printf("%d ", tabuleiro[i][j]);
         }
         printf("\n");
     }
-
-    // Nível Mestre - Habilidades Especiais com Matrizes
-    // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
-    // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
-    // Sugestão: Exiba o tabuleiro com as áreas afetadas, utilizando 0 para áreas não afetadas e 1 para áreas atingidas.
-
-    // Exemplos de exibição das habilidades:
-    // Exemplo para habilidade em cone:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 1 1 1 1 1
-    
-    // Exemplo para habilidade em octaedro:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 0 0 1 0 0
-
-    // Exemplo para habilidade em cruz:
-    // 0 0 1 0 0
-    // 1 1 1 1 1
-    // 0 0 1 0 0
 
     return 0;
 }
